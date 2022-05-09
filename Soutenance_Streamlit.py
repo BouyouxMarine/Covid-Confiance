@@ -208,10 +208,10 @@ def Title_Format(x):
 #********************************
 from PIL import Image 
 img = Image.open("covid.jpg")
-TSNE = Image.open(r"C:\Work\COVID/TSNE.jpg")
-Groupe = Image.open(r"C:\Work\COVID/groupe.jpg")
-PartiPol = Image.open(r"C:\Work\COVID/partyid.jpg")
-H2 = Image.open(r"C:\Work\COVID/H2.jpg")
+TSNE = Image.open("TSNE.jpg")
+Groupe = Image.open("groupe.jpg")
+PartiPol = Image.open("partyid.jpg")
+H2 = Image.open("H2.jpg")
 
 st.sidebar.image(img)
 st.sidebar.title("Covid & Confiance")
