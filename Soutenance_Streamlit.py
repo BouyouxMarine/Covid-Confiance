@@ -412,7 +412,7 @@ elif page==pages[1]:
     st.write("La confiance de l'indvid envers les autres détermine fortement la constitution des groupes 2 et 3 ")
     st.image(H2, use_column_width='always')   
         
-elif page==pages[1]:
+elif page==pages[2]:
         def Default_Value(x_bool):
            Bobtemp = True 
            #st.session_state.Def = x_bool
@@ -460,19 +460,42 @@ elif page==pages[1]:
             st.stop()
             sys.exit()
         
-        df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
-        df_O.dropna(how='all', axis=1, inplace=True) 
+        #ajout cache
+        @st.cache(allow_output_mutation=True) 
+        def load_df_wave(df_O):
+            df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
+            return df_O.dropna(how='all', axis=1)
         
-        dic_df_O ={}
-        for W in O_Wave_Selected:
-            df_Temp = df_O.loc[df_O.wave == W]
-            dic_df_O[W] = df_Temp
+        df_O = load_df_wave(df_O)
+        
+        @st.cache(allow_output_mutation=True)
+        def load_df_wave2(df_O):
+            dic_df_O ={}
+            for W in O_Wave_Selected:
+                df_Temp = df_O.loc[df_O.wave == W]
+                dic_df_O[W] = df_Temp        
+            df_O_Temp = dic_df_O[O_Wave_Selected[0]].dropna(how='all', axis=1)
+            if len(O_Wave_Selected) > 1: 
+                for W in O_Wave_Selected[1:]:
+                  df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner')  
+            return df_O_Temp.dropna(how='all', axis=1) 
+        
+        df_O = load_df_wave2(df_O)
+        
+        #ancien code sans le cache
+        #df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
+        #df_O.dropna(how='all', axis=1, inplace=True) 
+        
+        #dic_df_O ={}
+        #for W in O_Wave_Selected:
+        #    df_Temp = df_O.loc[df_O.wave == W]
+        #    dic_df_O[W] = df_Temp
     
-        df_O_Temp = dic_df_O[O_Wave_Selected[0]].dropna(how='all', axis=1)
-        if len(O_Wave_Selected) > 1: 
-            for W in O_Wave_Selected[1:]:
-              df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner')  
-        df_O = df_O_Temp.dropna(how='all', axis=1) 
+       # df_O_Temp = dic_df_O[O_Wave_Selected[0]].dropna(how='all', axis=1)
+       # if len(O_Wave_Selected) > 1: 
+       #     for W in O_Wave_Selected[1:]:
+       #       df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner')  
+       # df_O = df_O_Temp.dropna(how='all', axis=1) 
         
         st.sidebar.write('How much do you trust…?:')
         B4_0 = st.sidebar.checkbox('The mayor of your town/city',disabled=not 'B4_0' in df_O.columns,on_change=Default_Value(True))
