@@ -57,7 +57,6 @@ st.markdown(
 @st.cache(allow_output_mutation=True)
 def load_data2():
     # Import de la liste des variabels avec leurs définitions
-    #df_KeyLab = pd.read_excel("C:\Work\COVID\Key_Label.xlsx", index_col = 0)
     df_KeyLab = pd.read_excel("Key_Label.xlsx", index_col = 0) 
     Vl = dict(zip(df_KeyLab.index, df_KeyLab["Label 1"]))
     return Vl
@@ -231,12 +230,6 @@ st.markdown(
    
 background_color = '#e3e3e3'
 
-
-
-
-
-
-
 if page==pages[0]:
           
     st.image(img, use_column_width='always')
@@ -257,7 +250,7 @@ if page==pages[0]:
     
     st.header("Description rapide des données")
     
-    st.subheader("Nombre de personnes interrogées par pays et par vague :")
+    st.subheader("Nombre de personnes interrogées par pays et par questionnaire :")
     
     st.write("")
     
@@ -281,17 +274,16 @@ if page==pages[0]:
     
     st.write(fig0)
     
-    st.subheader("Catégorie d'âge ayant le plus répondu :")
+     #Age
+    st.subheader("Répartitions des âges ayant le plus répondu :")
    
     st.write("") 
-            
-    #Age
      
     df_2_temp= df.groupby(by=df.Age).count().reset_index()
     df_temp= df_2_temp.sort_values(by = 'Nb participants',ascending = False).head(50)
          
     mycolumns = ['Age','Nb participants']    
-    top_n = st.slider("Combien de catégories d'âge souhaitez vous afficher?", min_value=2, max_value=10, value=3, step=1)
+    top_n = st.slider("Combien d'élements souhaitez vous afficher?", min_value=2, max_value=10, value=3, step=1)
     top_n=int(top_n)
     
     df_3 = df_temp[mycolumns].sort_values(by = 'Nb participants',ascending = False).head(top_n)
@@ -370,32 +362,10 @@ if page==pages[0]:
     
         st.write(fig4)
     
-    #Vaccin
-    st.subheader("Si un vaccin été disponible dans les prochains mois, vous feriez vous vacciner ?")
-    st.text("Réponses uniquement pour le questionnaire de la vague 4")
-    
-    df_vacc=df[df['VACC1']!= 'Nan']
-    mycolumns_vac = ['VACC1','id'] 
-
-    df_vac_temp= df_vacc.groupby(by=df_vacc.VACC1).count().reset_index()
-    df_vaccin = df_vac_temp[mycolumns_vac].sort_values(by = 'VACC1')
-    
-    fig5 = px.line(df_vaccin, x="VACC1", y="id", title='')
-    
-    fig5.update_layout(
-        width=800,
-        height=400,
-        margin = dict(l=1,r=1,b=1,t=1),
-        font=dict(color='#383635', size=15),
-        paper_bgcolor=background_color,
-        )    
-
-    fig5.update_xaxes(title_text='')   
-    fig5.update_yaxes(title_text='')
-    
-    fig5.update_traces(line_color="#000000")
-    
-    st.write(fig5)
+    #DataFrame
+    st.subheader("Visualisation du DataFrame")
+      
+    st.write(df.head(20))
     
 elif page==pages[1]:
     st.title("Modélisation")
