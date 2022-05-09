@@ -58,7 +58,7 @@ st.markdown(
 def load_data2():
     # Import de la liste des variabels avec leurs définitions
     #df_KeyLab = pd.read_excel("C:\Work\COVID\Key_Label.xlsx", index_col = 0)
-    df_KeyLab = pd.read_excel(Key_Label.xlsx", index_col = 0) 
+    df_KeyLab = pd.read_excel("Key_Label.xlsx", index_col = 0) 
     Vl = dict(zip(df_KeyLab.index, df_KeyLab["Label 1"]))
     return Vl
          
