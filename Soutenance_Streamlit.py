@@ -130,7 +130,7 @@ def load_data1():
 Vl = load_data2()
 
 df_Num = load_data3()
-Col_Select = df_Num.columns
+#Col_Select = df_Num.columns
 df_O = load_data1()  
 
 
