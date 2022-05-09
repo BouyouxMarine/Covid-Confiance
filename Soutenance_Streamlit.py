@@ -207,7 +207,7 @@ def Title_Format(x):
 
 #********************************
 from PIL import Image 
-img = Image.open(r"C:\Work\COVID/covid.jpg") 
+img = Image.open(covid.jpg") 
 st.sidebar.image(img)
 st.sidebar.title("Covid & Confiance")
 
