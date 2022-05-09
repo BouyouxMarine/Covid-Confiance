@@ -14,8 +14,8 @@ warnings.filterwarnings('ignore')
 
 import plotly.express as px  
 import plotly.graph_objects as go
-from streamlit.scriptrunner import RerunData
-from streamlit.scriptrunner import RerunException
+#from streamlit.scriptrunner import RerunData
+#from streamlit.scriptrunner import RerunException
 import sys 
 #st.set_page_config(layout="wide")
 
