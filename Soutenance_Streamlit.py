@@ -207,11 +207,16 @@ def Title_Format(x):
 
 #********************************
 from PIL import Image 
-img = Image.open("covid.jpg") 
+img = Image.open("covid.jpg")
+TSNE = Image.open(r"C:\Work\COVID/TSNE.jpg")
+Groupe = Image.open(r"C:\Work\COVID/groupe.jpg")
+PartiPol = Image.open(r"C:\Work\COVID/partyid.jpg")
+H2 = Image.open(r"C:\Work\COVID/H2.jpg")
+
 st.sidebar.image(img)
 st.sidebar.title("Covid & Confiance")
 
-pages = ["Introduction","Visualisation", "Modélisation"]
+pages = ["Introduction","Modélisation", "Visualisation"]
 page = st.sidebar.radio('', pages)
 
 st.markdown(
@@ -392,6 +397,21 @@ if page==pages[0]:
     
     st.write(fig5)
     
+elif page==pages[1]:
+    st.title("Modélisation")
+ 
+    st.subheader("ACP + TSNE")
+    st.image(TSNE, use_column_width='always')
+    
+    st.subheader("Réprésentation des groupes sur une distribution bi-variée")
+    st.image(Groupe, use_column_width='always')
+
+    st.write("Le parti politique détermine fortement la constitution des groupes 1 et 4 ")
+    st.image(PartiPol, use_column_width='always')
+    
+    st.write("La confiance de l'indvid envers les autres détermine fortement la constitution des groupes 2 et 3 ")
+    st.image(H2, use_column_width='always')   
+        
 elif page==pages[1]:
         def Default_Value(x_bool):
            Bobtemp = True 
@@ -710,20 +730,7 @@ elif page==pages[1]:
 
                 
                 
-elif page==pages[2]:
-    st.title("Modélisation")
- 
-    st.text("Ceci concerne la partie Machine Learning")
-    
-    st.line_chart({"data": [1, 5, 2, 6, 2, 1]})
 
-    with st.expander("See explanation"):
-     st.write("""
-         The chart above shows some numbers I picked for you.
-         I rolled actual dice for these, so they're *guaranteed* to
-         be random.
-     """)
-     st.image("https://static.streamlit.io/examples/dice.jpg")
     
     
 
