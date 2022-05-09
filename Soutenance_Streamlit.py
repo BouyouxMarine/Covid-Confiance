@@ -94,7 +94,7 @@ def load_data3():
 
 
 @st.cache(allow_output_mutation=True)
-def load_data1(Col_Select):
+def load_data1():
     data1_AT = pd.read_csv('df_AT.csv',index_col=0)
     data1_AU = pd.read_csv('df_AU.csv',index_col=0)
     data1_BR = pd.read_csv('df_BR.csv',index_col=0)
@@ -131,7 +131,7 @@ Vl = load_data2()
 
 df_Num = load_data3()
 Col_Select = df_Num.columns
-df_O = load_data1(Col_Select)  
+df_O = load_data1()  
 
 
 
