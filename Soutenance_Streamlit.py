@@ -370,7 +370,7 @@ if page==pages[0]:
 elif page==pages[1]:
     st.title("Modélisation")
     st.write("")
-    st.write("Les captures d'écrans présentées ci-dessous ont été faite avec le questionnaire de la vague 1 pour la France."
+    st.write("Les captures d'écrans présentées ci-dessous ont été faite avec le questionnaire de la vague 1 pour la France.")
  
     st.subheader("ACP + TSNE")
     st.image(TSNE, use_column_width='always')
