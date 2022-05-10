@@ -406,20 +406,23 @@ elif page==pages[2]:
         
         O_Country_TRI = [int(str(i)[:2].replace(".","")) for i in list(df_O.country.value_counts().index)]
         O_Country_To_Select = pd.DataFrame(df_O.country.value_counts().index,O_Country_TRI).sort_index().iloc[:,0]
+        #st.sidebar.subheader('Country name')
         O_Country = st.sidebar.multiselect('Country name',(O_Country_To_Select),on_change=Default_Value(True))
         
+
         if len(O_Country) == 0: 
-            st.stop()
-            sys.exit()
-        df_O_Temp = df_O.loc[df_M.country == O_Country[0]].dropna(how='all', axis=1)
-        if len(O_Country) > 1: 
-            for Country_ in O_Country[1:]:
-                df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_M.country == Country_].dropna(how='all', axis=1)],join ='inner') 
-    
-        df_O = df_O_Temp.dropna(how='all', axis=1)  
+                st.stop()
+                sys.exit()
+                
+        #df_O_Temp = df_O.loc[df_M.country == O_Country[0]].dropna(how='all', axis=1)
+        #if len(O_Country) > 1: 
+        #        for Country_ in O_Country[1:]:
+        #            df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_M.country == Country_].dropna(how='all', axis=1)],join ='inner') 
         
+        df_O = df_O.loc[df_M.country.isin(O_Country)]
+        df_O = df_O.dropna(how='all', axis=1)        
         
-        st.sidebar.write('Wave of the survey')
+        st.sidebar.subheader('Wave of the survey')
         W1 = st.sidebar.checkbox('Wave 1 (Mars 2020)',on_change=Default_Value(True))
         W2 = st.sidebar.checkbox('Wave 2 (Avril 2020)',on_change=Default_Value(True))
         W3 = st.sidebar.checkbox('Wave 3 (Juin 2020)',on_change=Default_Value(True))
@@ -433,45 +436,31 @@ elif page==pages[2]:
         if len(O_Wave_Selected) == 0: 
             st.stop()
             sys.exit()
+            
+        df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
+        df_O = df_O.dropna(how='all', axis=1)    
         
-        #ajout cache
-        @st.cache(allow_output_mutation=True) 
-        def load_df_wave(df_O):
-            df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
-            return df_O.dropna(how='all', axis=1)
+        col1,col2 = st.columns((1,1))
         
-        df_O = load_df_wave(df_O)
+        with col1:        
+            CheckDef = st.checkbox('Lock variable')
+        with col2:   
+            CheckInn = st.checkbox('Inner Join')
         
-        @st.cache(allow_output_mutation=True)
-        def load_df_wave2(df_O):
+        
+            
+        if CheckInn == True:
             dic_df_O ={}
             for W in O_Wave_Selected:
-                df_Temp = df_O.loc[df_O.wave == W]
-                dic_df_O[W] = df_Temp        
+                    df_Temp = df_O.loc[df_O.wave == W]
+                    dic_df_O[W] = df_Temp        
             df_O_Temp = dic_df_O[O_Wave_Selected[0]].dropna(how='all', axis=1)
             if len(O_Wave_Selected) > 1: 
-                for W in O_Wave_Selected[1:]:
-                  df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner')  
-            return df_O_Temp.dropna(how='all', axis=1) 
+                 for W in O_Wave_Selected[1:]:
+                   df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner') 
+            df_O = df_O_Temp.copy(deep=True)    
         
-        df_O = load_df_wave2(df_O)
-        
-        #ancien code sans le cache
-        #df_O = df_O.loc[df_O.wave.isin(O_Wave_Selected)]
-        #df_O.dropna(how='all', axis=1, inplace=True) 
-        
-        #dic_df_O ={}
-        #for W in O_Wave_Selected:
-        #    df_Temp = df_O.loc[df_O.wave == W]
-        #    dic_df_O[W] = df_Temp
-    
-       # df_O_Temp = dic_df_O[O_Wave_Selected[0]].dropna(how='all', axis=1)
-       # if len(O_Wave_Selected) > 1: 
-       #     for W in O_Wave_Selected[1:]:
-       #       df_O_Temp = pd.concat([df_O_Temp,df_O.loc[df_O.wave == W].dropna(how='all', axis=1)],join ='inner')  
-       # df_O = df_O_Temp.dropna(how='all', axis=1) 
-        
-        st.sidebar.write('How much do you trust…?:')
+        st.sidebar.subheader('How much do you trust…?:')
         B4_0 = st.sidebar.checkbox('The mayor of your town/city',disabled=not 'B4_0' in df_O.columns,on_change=Default_Value(True))
         B4_6 = st.sidebar.checkbox('The government',disabled=not 'B4_6' in df_O.columns,on_change=Default_Value(True))
         B4_7 = st.sidebar.checkbox('Scientists',disabled=not 'B4_7' in df_O.columns,on_change=Default_Value(True))
@@ -493,6 +482,9 @@ elif page==pages[2]:
             if key in O_Conf_Selected:
                 Lst_Confi_Key.append(key)
                 Lst_Confi_val.append(val) 
+                
+        df_O = df_O.dropna(how='all', axis=1) 
+        
         Lst_Vl_Val=[]
         for Col in df_O.columns:
             Lst_Vl_Val.append(Vl[Col])          
@@ -500,13 +492,10 @@ elif page==pages[2]:
         Lst_Vl_Val.sort()
         List_Feats = [x for x in Lst_Vl_Val if not x in list(Lst_Confi_val)]
         
-        col1,col2 = st.columns((12,1))
-        
-        with col1:        
-            CheckDef = st.checkbox('Lock variable')
+
             
-        with col1:    
-            if CheckDef == True : 
+          
+        if CheckDef == True : 
                 if 'lab' in st.session_state:
                     #O_Feats = st.selectbox('Variables of interest',List_Feats,index= List_Feats.index(st.session_state.lab))
                     O_Feats = st.session_state.lab
@@ -514,7 +503,7 @@ elif page==pages[2]:
                 else:
                     O_Feats = st.selectbox('Variables of interest',List_Feats) 
                     st.session_state.lab =  O_Feats
-            else: 
+        else: 
                 O_Feats = st.selectbox('Variables of interest',List_Feats)
                 st.session_state.lab =  O_Feats        
         
@@ -532,23 +521,24 @@ elif page==pages[2]:
                 Lst_Feats_val.append(val)
                 
         df_O = df_O.loc[:,['wave','country'] + Lst_Feats_Key + Lst_Confi_Key]
-        df_O.dropna(how='all', axis=1, inplace=True) 
-        
         replace = ['not at all','not a lot','somewhat','completely',"Don't trust at all","Don't trust a lot","Trust somewhat","Trust completely"]
         to_replace = [1,2,3,4,1,2,3,4]
         df_O[Lst_Confi_Key] = df_O[Lst_Confi_Key].replace(replace,to_replace)
-        
-        st.sidebar.write('Paramètres graphiques')
-        Leg = st.sidebar.checkbox("Légende")
-        
-        
         List_Labl_Txt = []
         for Labl in df_O[Lst_Feats_Key]: 
-            if IsNumTxt_In_List(list(df_O[Labl]))=='Txt'and Labl != 'AGE': 
+            #st.write('vvvvvAAA', df_O[Labl])
+            if IsNumTxt_In_List(list(df_O[Labl]))!='Num'and Labl != 'AGE': 
                 Bob_Temp  = pd.concat([df_Num[Labl].fillna('').astype(str),df_O[Labl]], axis=1,join = 'inner')                
                 df_O[Labl] = Bob_Temp.loc[Bob_Temp.isnull().any(axis=1)==False].agg('_-'.join, axis=1)
-                List_Labl_Txt.append(Labl)        
-                #st.write('TRI', df_O[Labl])
+                List_Labl_Txt.append(Labl)  
+            
+        df_O = df_O.dropna(how='all', axis=1)
+        
+        
+        
+        st.sidebar.subheader('Paramètres graphiques')
+        Filters_People = st.sidebar.number_input('Filters on count responding', value=0)
+        Leg = st.sidebar.checkbox("Légende")       
         
         O_Wave_Selected = [str(x) for x in O_Wave_Selected]            
         Vague = "Wave " +  ", ".join(O_Wave_Selected)
@@ -584,6 +574,8 @@ elif page==pages[2]:
         Color_Bar=['red','none','none','none']
         edgecolor = [None,'red','red','red']
         
+       
+        
         if len(O_Country) > 0 and len(O_Wave_Selected) > 0 and len(O_Conf_Selected) > 0:        
             if Abs_wave == False:
                 for Country_ in O_Country:
@@ -613,8 +605,9 @@ elif page==pages[2]:
                             Temp_GS = Temp_GS.sort_index()
                             #st.write('gsgffsddgs',Temp_GS) 
                             #Temp_GS = Temp_GS.dropna(how='any')
-                            if label in List_Labl_Txt:
-                                
+                            #st.write('Lst',List_Labl_Txt) 
+                            #st.write('Lab',label) 
+                            if label in List_Labl_Txt:                                
                                 Temp_GS["TRI"] = Temp_GS.index
                                 #st.write('TRI',Temp_GS)
                                 def TRI_GS(x):
@@ -630,7 +623,12 @@ elif page==pages[2]:
                                 Temp_GS.set_index('index',inplace=True)
                                 #if len(Temp_GS.index) > 7:
                                 #    Temp_GS = Temp_GS.sort_values(by=[Lst_Confi_Key[-1]+ "_wave_" + Wave_])
-                            #st.write('gsg',Temp_GS)        
+                            #st.write('gsg',Temp_GS) 
+                            
+                            
+                            if Filters_People >0:
+                                Temp_GS = Temp_GS.loc[Temp_GS['Effectif_Total']>=Filters_People]
+                                
                             fig = plt.figure(figsize=(10,10))
                             x = Temp_GS.index.astype(str) 
                             x_ = np.arange(len(x))   
@@ -723,9 +721,7 @@ elif page==pages[2]:
                     if Leg: plt.legend(prop={'size': 12})  
                     my_expander = st.expander(Lst_Confi_val[Lst_Confi_Key.index(Conf_)], expanded=True)
                     with my_expander:
-                        st.pyplot(fig)
-
-                
+                        st.pyplot(fig)                
                 
 
     
