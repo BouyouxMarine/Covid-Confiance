@@ -237,7 +237,7 @@ if page==pages[0]:
     st.title("Introduction")
     
     
-    st.markdown('<div style="text-align: justify;">Le projet Citizens Attitudes Under COVID-19 Pandemic dit CAUCP a pour objectif d’étudier l’évolution de l''opinion publique pendant la pandémie de Covid19 dans 11 démocraties entre mars et décembre 2020. Plus particulièrement, d’étudier la confiance des habitants en leur gouvernement et en la science.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align: justify;">Le projet Citizens Attitudes Under COVID-19 Pandemic dit CAUCP a pour objectif d’étudier l’évolution de l opinion publique pendant la pandémie de Covid19 dans 11 démocraties entre mars et décembre 2020. Plus particulièrement, d’étudier la confiance des habitants en leur gouvernement et en la science.</div>', unsafe_allow_html=True)
     st.write("")
     st.markdown('<div style="text-align: justify;">Ce projet est coordonné par Sylvain Brouard (Sciences Po, CEVIPOF), Michael Becher (IAST, Université de Toulouse 1), Martial Foucault (Sciences Po, CEVIPOF) et Pavlos Vasilopoulos (University de York and CEVIPOF).</div>', unsafe_allow_html=True)
     st.write("")
@@ -249,6 +249,11 @@ if page==pages[0]:
     st.write("")
     
     st.header("Description rapide des données")
+    st.write("")
+    
+    #DataFrame
+    st.subheader("Visualisation du DataFrame")
+    st.write(df.head(20))
     
     st.subheader("Nombre de personnes interrogées par pays et par questionnaire :")
     
@@ -362,10 +367,7 @@ if page==pages[0]:
     
         st.write(fig4)
     
-    #DataFrame
-    st.subheader("Visualisation du DataFrame")
-      
-    st.write(df.head(20))
+    
     
 elif page==pages[1]:
     st.title("Modélisation")
@@ -375,13 +377,13 @@ elif page==pages[1]:
     st.subheader("ACP + TSNE")
     st.image(TSNE, use_column_width='always')
     
-    st.subheader("Réprésentation des groupes sur une distribution bi-variée")
-    st.image(Groupe, use_column_width='always')
+    #st.subheader("Réprésentation des groupes sur une distribution bi-variée")
+    #st.image(Groupe, use_column_width='always')
 
     st.write("Le parti politique détermine fortement la constitution des groupes 1 et 4 ")
     st.image(PartiPol, use_column_width='always')
     
-    st.write("La confiance de l'indvid envers les autres détermine fortement la constitution des groupes 2 et 3 ")
+    st.write("La confiance de l'individu envers les autres détermine fortement la constitution des groupes 2 et 3 ")
     st.image(H2, use_column_width='always')   
         
 elif page==pages[2]:
